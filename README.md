@@ -11,6 +11,7 @@ modify. Product direction is deliberately undecided — replace this paragraph o
 ```
 .hephaestus/          # nothing yet — factory config lives outside this repo
 hephaestus/           # importable package (flat layout, no install step required)
+  __main__.py         # CLI: `python3 -m hephaestus <command>`
   slug.py             # branch/slug conventions used by the factory
 tests/                # unittest suite, stdlib only
 .github/workflows/    # CI: the gate a card must pass to be considered done
@@ -27,7 +28,15 @@ python3 -m unittest discover -s tests -t . -v
 
 # lint
 ruff check .
+
+# CLI: compute a card's branch name (prints only the branch, so it pipes)
+python3 -m hephaestus branch hephaestus t_ab12cd34 "Add rate limiter"
+# -> hephaestus/t_ab12cd34-add_rate_limiter
 ```
+
+The CLI exits `0` on success and `2` with a short message on stderr when the
+arguments cannot produce a valid branch name (for example an unsafe task id);
+it never prints a traceback.
 
 Tests are dependency-free: Python 3.11+ standard library only. `ruff` is only needed
 when you touch lint-sensitive code; CI installs it automatically.
